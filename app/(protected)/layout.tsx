@@ -49,6 +49,12 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
 
   const event = getEventConfig();
   const userIsAdmin = isAdmin(user);
+  
+  // Debug logging (only in development)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[layout] User email:', user.email);
+    console.log('[layout] Is admin:', userIsAdmin);
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-foreground">
