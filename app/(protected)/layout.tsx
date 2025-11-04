@@ -2,6 +2,7 @@ import { type ReactNode } from "react";
 import { redirect } from "next/navigation";
 
 import { AppHeader } from "@/components/layout/app-header";
+import { isAdmin } from "@/lib/admin";
 import { getEventConfig } from "@/lib/env-config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -47,10 +48,11 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
   };
 
   const event = getEventConfig();
+  const userIsAdmin = isAdmin(user);
 
   return (
     <div className="min-h-screen bg-slate-50 text-foreground">
-      <AppHeader profile={headerProfile} />
+      <AppHeader profile={headerProfile} isAdmin={userIsAdmin} />
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {children}
       </main>

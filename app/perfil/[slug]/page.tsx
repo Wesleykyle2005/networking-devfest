@@ -282,9 +282,9 @@ export default async function PublicProfilePage({ params }: PageProps) {
         </Card>
 
         <footer className="flex flex-col items-center justify-between gap-3 sm:gap-4 border-t border-border/60 py-6 sm:py-8 text-center text-xs text-muted-foreground sm:flex-row">
-          <p>DevFest Managua 2025 • Conectando a la comunidad</p>
+          <p>DevFest Managua 2025 • Unleashing Innovation</p>
           <p className="text-[11px] uppercase tracking-[0.3em]">
-            Compartido por DevFest
+            GDG Managua
           </p>
         </footer>
       </div>

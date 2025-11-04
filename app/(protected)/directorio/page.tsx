@@ -134,9 +134,9 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
     <div className="space-y-6 sm:space-y-8">
       <header className="space-y-3">
         <p className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">Explora asistentes</p>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Directorio de DevFest Managua 2025</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Directorio DevFest Managua 2025</h1>
         <p className="max-w-2xl text-sm sm:text-base text-muted-foreground">
-          Encuentra a otras personas por nombre, empresa o especialidad y solicita una conexión para compartir datos de contacto.
+          Conecta con desarrolladores, Google Developer Experts y entusiastas de la tecnología. Encuentra personas por nombre, empresa o especialidad y amplía tu red profesional.
         </p>
       </header>
 

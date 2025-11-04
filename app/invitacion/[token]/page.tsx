@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventConfig } from "@/lib/env-config";
+import { syncOAuthAvatar } from "@/lib/sync-oauth-avatar";
 import Image from "next/image";
 
 interface InvitationPageProps {
@@ -131,6 +132,9 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         name: fallbackName,
         joined_event_at: new Date().toISOString(),
       });
+      
+      // Sync OAuth avatar (Google, etc.)
+      await syncOAuthAvatar({ user, currentAvatar: null });
     } else if (!profile.joined_event_at) {
       // Update existing profile
       await supabase
@@ -140,6 +144,14 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
           joined_event_at: new Date().toISOString(),
         })
         .eq("id", user.id);
+      
+      // Sync OAuth avatar if not already set
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
+      await syncOAuthAvatar({ user, currentAvatar: profileData?.avatar_url });
     }
 
     redirect("/perfil/editar");

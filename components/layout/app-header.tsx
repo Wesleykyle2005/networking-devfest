@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut, User, Edit, QrCode } from "lucide-react";
+import { LogOut, User, Edit, QrCode, Shield } from "lucide-react";
 
 import { NotificationBell } from "@/components/layout/notification-bell";
 
@@ -24,9 +24,10 @@ interface AppHeaderProps {
     avatarUrl?: string | null;
     slug?: string | null;
   } | null;
+  isAdmin?: boolean;
 }
 
-export function AppHeader({ profile }: AppHeaderProps) {
+export function AppHeader({ profile, isAdmin = false }: AppHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();
@@ -53,28 +54,28 @@ export function AppHeader({ profile }: AppHeaderProps) {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 px-4 py-6 text-center sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 sm:gap-4 px-4 py-3 sm:py-6 text-center sm:px-6 lg:px-8">
         <Link href="/dashboard">
           <Image
             src="/assets/devfest-logo.svg"
             alt="DevFest Managua"
             width={180}
             height={60}
-            className="h-12 w-auto"
+            className="h-8 sm:h-12 w-auto"
             priority
           />
         </Link>
 
-        <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
+        <p className="hidden sm:block text-sm uppercase tracking-[0.3em] text-muted-foreground">
           Networking official
         </p>
 
-        <nav className="flex flex-wrap items-center justify-center gap-3 text-xs font-semibold">
+        <nav className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-semibold">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-full border px-3 py-1.5 transition ${isActive(link.href)
+              className={`rounded-full border px-3 py-1 sm:py-1.5 transition ${isActive(link.href)
                 ? "border-primary/50 text-primary"
                 : "border-border/60 text-muted-foreground hover:border-primary/50 hover:text-primary"
                 }`}
@@ -87,7 +88,7 @@ export function AppHeader({ profile }: AppHeaderProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded-full border border-border/60 px-3 py-1.5 text-muted-foreground transition hover:border-primary/50 hover:text-primary inline-flex items-center gap-1.5">
+              <button className="rounded-full border border-border/60 px-3 py-1 sm:py-1.5 text-muted-foreground transition hover:border-primary/50 hover:text-primary inline-flex items-center gap-1.5">
                 <User className="h-3 w-3" />
                 <span>Mi Perfil</span>
               </button>
@@ -143,6 +144,17 @@ export function AppHeader({ profile }: AppHeaderProps) {
                       Mi código QR
                     </Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="cursor-pointer">
+                          <Shield className="mr-2 h-4 w-4" />
+                          Panel de administración
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                 </>
               )}

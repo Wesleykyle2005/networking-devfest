@@ -45,7 +45,7 @@ export function JoinForm({ eventName }: JoinFormProps) {
           throw new Error(body.error ?? "Código inválido. Vuelve a intentarlo.");
         }
 
-        setSuccess("¡Listo! Bienvenido/a a DevFest Managua 2025.");
+        setSuccess("¡Bienvenido/a a DevFest Managua 2025 - Unleashing Innovation!");
         router.replace("/perfil/editar");
         router.refresh();
       } catch (err) {
