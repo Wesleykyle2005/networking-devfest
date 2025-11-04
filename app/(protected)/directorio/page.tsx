@@ -131,11 +131,11 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
   };
 
   return (
-    <div className="space-y-8">
-      <header className="space-y-2">
-        <p className="text-sm uppercase tracking-wider text-muted-foreground">Explora asistentes</p>
-        <h1 className="text-3xl font-bold tracking-tight">Directorio de DevFest Managua 2025</h1>
-        <p className="max-w-2xl text-muted-foreground">
+    <div className="space-y-6 sm:space-y-8">
+      <header className="space-y-3">
+        <p className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">Explora asistentes</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Directorio de DevFest Managua 2025</h1>
+        <p className="max-w-2xl text-sm sm:text-base text-muted-foreground">
           Encuentra a otras personas por nombre, empresa o especialidad y solicita una conexión para compartir datos de contacto.
         </p>
       </header>
@@ -149,7 +149,7 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
           </CardContent>
         </Card>
       ) : (
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <section className="grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {profiles.map((profile) => (
             <DirectoryCard key={profile.id} profile={profile} />
           ))}

@@ -71,8 +71,8 @@ export function DirectoryControls({ totalResults, pageSize }: DirectoryControlsP
   }, [pageSize, searchParams, totalResults]);
 
   return (
-    <section className="space-y-4 rounded-xl border border-border/60 bg-card p-5 shadow-sm">
-      <div className="grid gap-4 md:grid-cols-3">
+    <section className="space-y-4 rounded-xl border border-border/60 bg-card p-4 sm:p-5 shadow-sm">
+      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 md:grid-cols-3">
         <div className="flex flex-col gap-2">
           <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Buscar por nombre
@@ -104,7 +104,7 @@ export function DirectoryControls({ totalResults, pageSize }: DirectoryControlsP
           />
         </div> */}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
         <div>
           {totalResults > 0 ? (
             <span>

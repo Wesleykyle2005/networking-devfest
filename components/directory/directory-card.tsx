@@ -49,9 +49,9 @@ export function DirectoryCard({ profile }: DirectoryCardProps) {
       onClick={handleClick}
       className="block"
     >
-      <Card className="h-full transition hover:-translate-y-0.5 hover:shadow-lg">
-        <CardContent className="flex gap-4 p-5">
-          <div className="h-16 w-16 overflow-hidden rounded-full border border-border/60 bg-muted">
+      <Card className="h-full transition active:scale-[0.98] hover:-translate-y-0.5 hover:shadow-lg">
+        <CardContent className="flex gap-3 sm:gap-4 p-4 sm:p-5">
+          <div className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 overflow-hidden rounded-full border border-border/60 bg-muted">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -65,12 +65,12 @@ export function DirectoryCard({ profile }: DirectoryCardProps) {
               </span>
             )}
           </div>
-          <div className="flex flex-1 flex-col justify-center gap-1">
-            <p className="text-base font-semibold text-foreground">{profile.name}</p>
+          <div className="flex flex-1 flex-col justify-center gap-1 min-w-0">
+            <p className="text-sm sm:text-base font-semibold text-foreground truncate">{profile.name}</p>
             {profile.headline && (
-              <p className="text-sm text-muted-foreground">{profile.headline}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{profile.headline}</p>
             )}
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-muted-foreground">
               {profile.company && (
                 <span className="rounded-full bg-muted px-2 py-1 uppercase tracking-wide">
                   {profile.company}

@@ -57,10 +57,10 @@ export default async function QrPage() {
   }
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-3 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Tu código QR</h1>
-        <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+    <div className="space-y-6 sm:space-y-10">
+      <header className="space-y-2 sm:space-y-3 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Tu código QR</h1>
+        <p className="mx-auto max-w-2xl text-xs sm:text-sm text-muted-foreground px-4">
           Guarda esta pantalla en tu teléfono o toma una captura para usarla como tarjeta de presentación.
           Si alguien escanea el código accederá a tu perfil público de {event.name}.
         </p>
@@ -77,7 +77,7 @@ export default async function QrPage() {
       />
 
       <Card className="mx-auto max-w-2xl border border-dashed border-primary/20 bg-primary/5">
-        <CardContent className="space-y-2 p-6 text-sm text-primary">
+        <CardContent className="space-y-2 p-4 sm:p-6 text-xs sm:text-sm text-primary">
           <p className="font-semibold uppercase tracking-wide">Tips rápidos</p>
           <ul className="list-disc space-y-1 pl-5 text-primary/90">
             <li>Fija este enlace en tu pantalla de inicio para abrirlo rápido.</li>

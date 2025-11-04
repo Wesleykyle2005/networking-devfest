@@ -51,11 +51,11 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
   return (
     <div className="min-h-screen bg-slate-50 text-foreground">
       <AppHeader profile={headerProfile} />
-      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {children}
       </main>
-      <footer className="border-t border-border/60 bg-white/90 py-6">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 text-xs text-muted-foreground sm:px-6 lg:px-8">
+      <footer className="border-t border-border/60 bg-white/90 py-4 sm:py-6">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 text-[10px] sm:text-xs text-muted-foreground sm:px-6 lg:px-8">
           <span>{event.name}</span>
           <span>Red de asistentes • 2025</span>
         </div>

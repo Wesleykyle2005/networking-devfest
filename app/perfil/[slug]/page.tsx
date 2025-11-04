@@ -148,12 +148,12 @@ export default async function PublicProfilePage({ params }: PageProps) {
     <div className="relative min-h-svh bg-gradient-to-b from-background via-background to-muted">
       <div className="absolute inset-x-0 top-0 z-0 h-72 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
       <AppHeader profile={headerProfile} />
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 sm:gap-8 px-4 py-8 sm:py-16 sm:px-6 lg:px-8">
 
         <Card className="border-none shadow-xl">
-          <CardContent className="flex flex-col gap-6 px-6 py-10 sm:px-10">
-            <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
-              <div className="h-36 w-36 overflow-hidden rounded-2xl border bg-muted shadow-inner">
+          <CardContent className="flex flex-col gap-5 sm:gap-6 px-4 py-6 sm:px-6 sm:py-10 md:px-10">
+            <div className="flex flex-col items-center gap-4 sm:gap-6 text-center sm:flex-row sm:items-start sm:text-left">
+              <div className="h-28 w-28 sm:h-36 sm:w-36 flex-shrink-0 overflow-hidden rounded-2xl border bg-muted shadow-inner">
                 {profile.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -168,29 +168,29 @@ export default async function PublicProfilePage({ params }: PageProps) {
                   </div>
                 )}
               </div>
-              <div className="flex flex-1 flex-col gap-4">
+              <div className="flex flex-1 flex-col gap-3 sm:gap-4 min-w-0">
                 <div>
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                     {profile.name}
                   </h1>
-                  <p className="mt-2 text-lg text-muted-foreground">
+                  <p className="mt-2 text-base sm:text-lg text-muted-foreground">
                     {profile.headline}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                     {profile.job_title && `${profile.job_title} • `}
                     {profile.company}
                   </p>
                 </div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 text-sm font-medium text-primary">
-                  <MapPin className="h-4 w-4" />
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium text-primary self-start">
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                   {profile.location}
                 </div>
                 {profile.bio && (
-                  <p className="text-base leading-relaxed text-muted-foreground">
+                  <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
                     {profile.bio}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                   <ConnectButton
                     profileSlug={slug}
                     profileId={profile.id}
@@ -207,9 +207,9 @@ export default async function PublicProfilePage({ params }: PageProps) {
               </div>
             </div>
 
-            <section className="grid gap-6 rounded-2xl bg-muted/40 p-6 sm:grid-cols-2">
-              <div className="space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <section className="grid gap-5 sm:gap-6 rounded-2xl bg-muted/40 p-4 sm:p-6 sm:grid-cols-2">
+              <div className="space-y-2 sm:space-y-3">
+                <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Redes sociales
                 </h2>
                 {socials.length === 0 ? (
@@ -217,16 +217,16 @@ export default async function PublicProfilePage({ params }: PageProps) {
                     Este asistente aún no agregó sus redes.
                   </p>
                 ) : (
-                  <ul className="space-y-2 text-sm">
+                  <ul className="space-y-2 text-xs sm:text-sm">
                     {socials.map(({ label, value, icon: Icon }) => (
                       <li key={label}>
                         <Link
                           href={value!}
-                          className="inline-flex items-center gap-2 text-primary underline-offset-4 hover:underline"
+                          className="inline-flex items-center gap-2 text-primary underline-offset-4 hover:underline active:opacity-70"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Icon className="h-4 w-4" />
+                          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           {label}
                         </Link>
                       </li>
@@ -234,14 +234,14 @@ export default async function PublicProfilePage({ params }: PageProps) {
                   </ul>
                 )}
               </div>
-              <div className="space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <div className="space-y-2 sm:space-y-3">
+                <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Contacto directo
                 </h2>
-                <ul className="space-y-3 text-sm">
+                <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
                   {contactBlocks.map(({ label, value, icon: Icon, hidden }) => (
-                    <li key={label} className="flex items-center gap-3">
-                      <Icon className="h-4 w-4 text-primary" />
+                    <li key={label} className="flex items-start gap-2 sm:gap-3">
+                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">{label}</p>
                         {value && hidden ? (
@@ -262,7 +262,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
           </CardContent>
         </Card>
 
-        <footer className="flex flex-col items-center justify-between gap-4 border-t border-border/60 py-8 text-center text-xs text-muted-foreground sm:flex-row">
+        <footer className="flex flex-col items-center justify-between gap-3 sm:gap-4 border-t border-border/60 py-6 sm:py-8 text-center text-xs text-muted-foreground sm:flex-row">
           <p>DevFest Managua 2025 • Conectando a la comunidad</p>
           <p className="text-[11px] uppercase tracking-[0.3em]">
             Compartido por DevFest

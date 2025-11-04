@@ -85,21 +85,21 @@ export function QrBadge({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card className="mx-auto max-w-sm border border-border/60 shadow-lg">
-        <CardContent className="flex flex-col items-center gap-6 p-6">
+        <CardContent className="flex flex-col items-center gap-4 sm:gap-6 p-4 sm:p-6">
           <div className="w-full text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-muted-foreground">
               {eventName}
             </p>
-            <h2 className="mt-2 text-xl font-semibold text-foreground">
+            <h2 className="mt-2 text-lg sm:text-xl font-semibold text-foreground">
               {attendeeName}
             </h2>
             {subtitle && (
-              <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">{subtitle}</p>
             )}
           </div>
-          <div className="flex aspect-square w-full max-w-[240px] items-center justify-center rounded-2xl border border-dashed border-primary/20 bg-white p-4 shadow-inner">
+          <div className="flex aspect-square w-full max-w-[220px] sm:max-w-[240px] items-center justify-center rounded-2xl border border-dashed border-primary/20 bg-white p-3 sm:p-4 shadow-inner">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={qrDataUrl}
@@ -113,13 +113,13 @@ export function QrBadge({
         </CardContent>
       </Card>
 
-      <div className="flex flex-wrap justify-center gap-3">
-        <Button onClick={handleDownload} disabled={isDownloading}>
+      <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 sm:gap-3">
+        <Button onClick={handleDownload} disabled={isDownloading} className="w-full sm:w-auto">
           {isDownloading ? "Generando..." : "Descargar PNG"}
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline">Modo pantalla completa</Button>
+            <Button variant="outline" className="w-full sm:w-auto">Modo pantalla completa</Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg border-none bg-black/90 p-4 text-white">
             <DialogHeader className="items-center text-center">

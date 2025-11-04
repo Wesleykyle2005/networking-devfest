@@ -158,11 +158,11 @@ export default async function ConnectionsPage({ searchParams }: PageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
-    <div className="space-y-8">
-      <header className="space-y-2">
-        <p className="text-sm uppercase tracking-wider text-muted-foreground">Tu red</p>
-        <h1 className="text-3xl font-bold tracking-tight">Mis conexiones</h1>
-        <p className="max-w-2xl text-muted-foreground">
+    <div className="space-y-6 sm:space-y-8">
+      <header className="space-y-3">
+        <p className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">Tu red</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Mis conexiones</h1>
+        <p className="max-w-2xl text-sm sm:text-base text-muted-foreground">
           Guarda notas privadas y gestiona tus solicitudes. Solo tú puedes ver esta información.
         </p>
         {!requiresApproval && (
@@ -180,7 +180,7 @@ export default async function ConnectionsPage({ searchParams }: PageProps) {
             <Link
               key={tab.key}
               href={href}
-              className={`rounded-full border px-4 py-2 text-sm transition ${
+              className={`rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm transition active:scale-95 ${
                 isActive
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border/70 text-muted-foreground hover:border-primary/50"
@@ -204,9 +204,9 @@ export default async function ConnectionsPage({ searchParams }: PageProps) {
             connections.map((connection) => (
               <div
                 key={connection.id}
-                className="space-y-4 rounded-xl border border-border/60 bg-card p-6 shadow-sm"
+                className="space-y-3 sm:space-y-4 rounded-xl border border-border/60 bg-card p-4 sm:p-6 shadow-sm"
               >
-                <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                   <div>
                     <p className="text-base font-semibold text-foreground">
                       {connection.peer.name}
