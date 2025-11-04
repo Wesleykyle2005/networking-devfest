@@ -53,7 +53,16 @@ export async function POST(request: Request) {
     skipped: [] as { email: string; reason: string }[],
   };
 
-  for (const email of emails) {
+  // Helper function to add delay between emails (respect rate limits)
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  for (let i = 0; i < emails.length; i++) {
+    const email = emails[i];
+    
+    // Add 600ms delay between emails to respect Resend's 2 emails/second limit
+    if (i > 0) {
+      await delay(600);
+    }
     const normalizedEmail = email.toLowerCase().trim();
 
     // Validate email format
@@ -119,9 +128,21 @@ export async function POST(request: Request) {
     });
 
     if (!emailResult.success) {
-      results.failed.push({ email, reason: "Error al enviar email" });
-      // Delete invitation if email failed
-      await supabase.from("invitations").delete().eq("id", invitation.id);
+      const errorMessage = typeof emailResult.error === 'string' 
+        ? emailResult.error 
+        : "Error al enviar email";
+      results.failed.push({ email, reason: errorMessage });
+      
+      // Delete invitation if email failed to maintain consistency
+      const { error: deleteError } = await supabase
+        .from("invitations")
+        .delete()
+        .eq("id", invitation.id);
+      
+      if (deleteError) {
+        console.error(`[bulk-invitations] Failed to delete invitation for ${email}:`, deleteError);
+      }
+      
       continue;
     }
 
