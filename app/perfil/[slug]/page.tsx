@@ -45,6 +45,17 @@ export default async function PublicProfilePage({ params }: PageProps) {
     data: { user: viewer },
   } = await supabase.auth.getUser();
 
+  // Fetch viewer's own profile for header (not the profile being viewed)
+  let viewerProfile = null;
+  if (viewer) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("name, avatar_url, slug_uuid")
+      .eq("id", viewer.id)
+      .maybeSingle();
+    viewerProfile = data;
+  }
+
   const requiresApproval = connectionsRequireApproval();
   const loginHref = `/auth/login?next=/perfil/${slug}`;
   let connectionState: "idle" | "pending" | "connected" | "self" | "guest" = viewer ? "idle" : "guest";
@@ -137,11 +148,12 @@ export default async function PublicProfilePage({ params }: PageProps) {
     },
   ];
 
+  // Header should always show the logged-in user's info, not the profile being viewed
   const headerProfile = viewer ? {
-    name: profile?.name ?? viewer.user_metadata?.full_name ?? viewer.email,
+    name: viewerProfile?.name ?? viewer.user_metadata?.full_name ?? viewer.email,
     email: viewer.email,
-    avatarUrl: profile?.avatar_url ?? null,
-    slug: connectionState === "self" ? slug : null,
+    avatarUrl: viewerProfile?.avatar_url ?? null,
+    slug: viewerProfile?.slug_uuid ?? null,
   } : null;
 
   return (

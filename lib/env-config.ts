@@ -15,11 +15,13 @@ export const getAdminEmails = () =>
     .map((email) => email.trim())
     .filter(Boolean);
 
-export const connectionsRequireApproval = () => {
-  const raw = process.env.CONNECTIONS_REQUIRE_APPROVAL;
-  if (!raw) return false;
-  return !['false', '0', 'off', 'no'].includes(raw.toLowerCase());
-};
+export function connectionsRequireApproval(): boolean {
+  return process.env.CONNECTIONS_REQUIRE_APPROVAL === "true";
+}
+
+export function getAppDomain(): string {
+  return process.env.NEXT_PUBLIC_APP_DOMAIN || "localhost:3000";
+}
 
 export const log = (level: string, message: string, ...args: unknown[]) => {
   console.log(`[${level.toUpperCase()}]`, message, ...args);

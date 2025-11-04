@@ -1,8 +1,7 @@
 import QRCode from "qrcode";
 import { ImageResponse } from "@vercel/og";
-import { headers } from "next/headers";
 
-import { getEventConfig } from "@/lib/env-config";
+import { getEventConfig, getAppDomain } from "@/lib/env-config";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -70,12 +69,9 @@ export async function POST(request: Request) {
     });
   }
 
-  const headerList = await headers();
-  const proto = headerList.get("x-forwarded-proto") ?? "http";
-  const host =
-    headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "localhost:3000";
-  const baseUrl = `${proto}://${host}`;
-  const profileUrl = `${baseUrl}/perfil/${profile.slug_uuid}`;
+  const event = getEventConfig();
+  const appDomain = getAppDomain();
+  const profileUrl = `https://${appDomain}/perfil/${profile.slug_uuid}`;
 
   let qrDataUrl: string;
   try {
@@ -87,14 +83,13 @@ export async function POST(request: Request) {
         light: "#ffffff",
       },
     });
-  } catch {
-    return new Response(JSON.stringify({ error: "No pudimos generar el QR" }), {
+  } catch (error) {
+    console.error("[qr/render] Failed generating QR", error);
+    return new Response(JSON.stringify({ error: "Error generando QR" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
-
-  const event = getEventConfig();
 
   const width = 1080;
   const height = 1920;

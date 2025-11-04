@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { connectionsRequireApproval, getEventConfig } from "@/lib/env-config";
+import { sendConnectionRequestEmail } from "@/lib/emails";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
 
   let profileQuery = supabase
     .from("profiles")
-    .select("id, event_id")
+    .select("id, event_id, name, headline, company, slug_uuid")
     .limit(1);
 
   if (payload.slug) {
@@ -93,15 +94,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: "pending" });
   }
 
-  const insertRequest = await supabase.from("connection_requests").insert({
-    event_id: event.id,
-    requester_id: user.id,
-    recipient_id: target.id,
-    status: requireApproval ? "pending" : "approved",
-  });
+  const { data: insertedRequest, error: insertError } = await supabase
+    .from("connection_requests")
+    .insert({
+      event_id: event.id,
+      requester_id: user.id,
+      recipient_id: target.id,
+      status: requireApproval ? "pending" : "approved",
+    })
+    .select("id")
+    .single();
 
-  if (insertRequest.error) {
-    if ((insertRequest.error as { code?: string }).code === "23505") {
+  if (insertError) {
+    if ((insertError as { code?: string }).code === "23505") {
       return NextResponse.json({ status: requireApproval ? "pending" : "connected" });
     }
 
@@ -111,7 +116,50 @@ export async function POST(request: Request) {
     );
   }
 
+  // Get requester profile for notifications/emails
+  const { data: requesterProfile } = await supabase
+    .from("profiles")
+    .select("name, headline, company, slug_uuid")
+    .eq("id", user.id)
+    .single();
+
   if (requireApproval) {
+    // Create in-app notification and send email
+    let serviceClient;
+    try {
+      serviceClient = createServiceRoleClient();
+      
+      // Create notification
+      await serviceClient.from("notifications").insert({
+        user_id: target.id,
+        type: "connection_request",
+        actor_id: user.id,
+        reference_id: insertedRequest.id,
+      });
+
+      // Get recipient email using service client
+      const { data: recipientUser } = await serviceClient.auth.admin.getUserById(target.id);
+
+      // Send email notification
+      if (recipientUser?.user?.email && requesterProfile) {
+        console.log("[connections/request] Sending email to:", recipientUser.user.email);
+        sendConnectionRequestEmail({
+          recipientEmail: recipientUser.user.email,
+          recipientName: target.name || "Usuario",
+          requesterName: requesterProfile.name || "Alguien",
+          requesterHeadline: requesterProfile.headline,
+          requesterCompany: requesterProfile.company,
+          requesterSlug: requesterProfile.slug_uuid,
+        }).catch((error) => {
+          console.error("[connections/request] Error sending email:", error);
+        });
+      } else {
+        console.log("[connections/request] Skipping email - no recipient email or requester profile");
+      }
+    } catch (error) {
+      console.error("[connections/request] Error in notification/email flow:", error);
+    }
+
     return NextResponse.json({ status: "pending" });
   }
 

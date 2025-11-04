@@ -1,10 +1,9 @@
 import QRCode from "qrcode";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { QrBadge } from "@/components/qr/qr-badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { getEventConfig } from "@/lib/env-config";
+import { getEventConfig, getAppDomain } from "@/lib/env-config";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -30,12 +29,8 @@ export default async function QrPage() {
   }
 
   const event = getEventConfig();
-  const headerList = await headers();
-  const proto = headerList.get("x-forwarded-proto") ?? "http";
-  const host =
-    headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "localhost:3000";
-  const baseUrl = `${proto}://${host}`;
-  const profileUrl = `${baseUrl}/perfil/${profile.slug_uuid}`;
+  const appDomain = getAppDomain();
+  const profileUrl = `https://${appDomain}/perfil/${profile.slug_uuid}`;
 
   let qrDataUrl: string;
   try {

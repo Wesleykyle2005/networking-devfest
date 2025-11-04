@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User, Edit } from "lucide-react";
 
+import { NotificationBell } from "@/components/layout/notification-bell";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -87,6 +89,8 @@ export function AppHeader({ profile }: AppHeaderProps) {
               {link.label}
             </Link>
           ))}
+          
+          {profile && <NotificationBell />}
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

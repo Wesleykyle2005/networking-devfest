@@ -28,7 +28,7 @@ export function LoginForm({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
-  const nextParam = searchParams?.get("next");
+  const redirectParam = searchParams?.get("redirect") || searchParams?.get("next");
 
   const handleGoogleLogin = async () => {
     setError(null);
@@ -36,7 +36,7 @@ export function LoginForm({
     setIsGoogleLoading(true);
     try {
       const supabase = createClient();
-      const redirectUrl = `${window.location.origin}/auth/callback${nextParam ? `?next=${encodeURIComponent(nextParam)}` : ""}`;
+      const redirectUrl = `${window.location.origin}/auth/callback${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -74,7 +74,7 @@ export function LoginForm({
     setIsEmailLoading(true);
     try {
       const supabase = createClient();
-      const redirectUrl = `${window.location.origin}/auth/confirm${nextParam ? `?next=${encodeURIComponent(nextParam)}` : ""}`;
+      const redirectUrl = `${window.location.origin}/auth/confirm${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`;
 
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email,

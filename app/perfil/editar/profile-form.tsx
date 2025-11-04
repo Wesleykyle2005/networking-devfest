@@ -9,8 +9,17 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LocationInput } from "@/components/ui/location-input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -113,6 +122,8 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const normalizedDefaults = useMemo(
     () => ({
@@ -229,9 +240,9 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
             }
           });
         }
-        setErrorMessage(
-          result.error ?? "No pudimos guardar los cambios. Intenta nuevamente.",
-        );
+        const errorMsg = result.error ?? "No pudimos guardar los cambios. Intenta nuevamente.";
+        setErrorMessage(errorMsg);
+        setShowErrorModal(true);
         return;
       }
 
@@ -239,16 +250,22 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
       setAvatarFile(null);
       setAvatarPreview(avatarUrl || null);
       form.setValue("avatar_url", avatarUrl, { shouldDirty: false });
-      router.refresh();
-      if (result.slug) {
-        router.push(`/perfil/${result.slug}`);
-      }
+
+      // Show success modal and redirect after 1 second
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        router.refresh();
+        if (result.slug) {
+          router.push(`/perfil/${result.slug}`);
+        }
+      }, 1000);
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : "Ocurrió un error inesperado. Intenta nuevamente.";
       setErrorMessage(message);
+      setShowErrorModal(true);
     } finally {
       setIsSaving(false);
     }
@@ -354,7 +371,11 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
               label="Ubicación"
               error={form.formState.errors.location?.message}
             >
-              <Input placeholder="Ciudad, país" {...form.register("location")} />
+              <LocationInput
+                value={form.watch("location")}
+                onChange={(value) => form.setValue("location", value, { shouldDirty: true })}
+                placeholder="Managua, Nicaragua"
+              />
             </FormField>
           </CardContent>
         </Card>
@@ -436,7 +457,11 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
                 label="Teléfono"
                 error={form.formState.errors.phone?.message}
               >
-                <Input placeholder="+505 8888 0000" {...form.register("phone")} />
+                <PhoneInput
+                  value={form.watch("phone")}
+                  onChange={(value) => form.setValue("phone", value || "", { shouldDirty: true })}
+                  placeholder="Ingresa tu número"
+                />
               </FormField>
               <FormField
                 label="Correo público"
@@ -517,6 +542,35 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
           </div>
         </div>
       </form>
+
+      {/* Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">✓ Perfil actualizado</DialogTitle>
+            <DialogDescription className="text-center">
+              Tus cambios se guardaron correctamente. Redirigiendo a tu perfil...
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      {/* Error Modal */}
+      <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">Error al guardar</DialogTitle>
+            <DialogDescription className="text-center">
+              {errorMessage || "No pudimos guardar los cambios. Intenta nuevamente."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center">
+            <Button onClick={() => setShowErrorModal(false)}>
+              Cerrar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
