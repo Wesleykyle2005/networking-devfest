@@ -75,8 +75,8 @@ export function AppHeader({ profile }: AppHeaderProps) {
               key={link.href}
               href={link.href}
               className={`rounded-full border px-3 py-1.5 transition ${isActive(link.href)
-                  ? "border-primary/50 text-primary"
-                  : "border-border/60 text-muted-foreground hover:border-primary/50 hover:text-primary"
+                ? "border-primary/50 text-primary"
+                : "border-border/60 text-muted-foreground hover:border-primary/50 hover:text-primary"
                 }`}
             >
               {link.label}
@@ -89,7 +89,7 @@ export function AppHeader({ profile }: AppHeaderProps) {
             <DropdownMenuTrigger asChild>
               <button className="rounded-full border border-border/60 px-3 py-1.5 text-muted-foreground transition hover:border-primary/50 hover:text-primary inline-flex items-center gap-1.5">
                 <User className="h-3 w-3" />
-                <span>{profile?.name?.split(' ')[0] ?? 'Cuenta'}</span>
+                <span>Mi Perfil</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-64" align="end" forceMount>

@@ -21,12 +21,21 @@ async function syncOAuthAvatar({
 }) {
   if (currentAvatar) return;
   const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
-  const remoteUrl =
+  let remoteUrl =
     (typeof metadata.avatar_url === "string" && metadata.avatar_url.length > 0 && metadata.avatar_url) ||
     (typeof metadata.picture === "string" && metadata.picture.length > 0 && metadata.picture) ||
     null;
 
   if (!remoteUrl) return;
+
+  // Request higher resolution from Google (500x500 instead of default 96x96)
+  if (remoteUrl.includes('googleusercontent.com')) {
+    remoteUrl = remoteUrl.replace(/=s\d+-c/, '=s500-c');
+    // If no size parameter exists, add it
+    if (!remoteUrl.includes('=s')) {
+      remoteUrl = `${remoteUrl}=s500-c`;
+    }
+  }
 
   try {
     const response = await fetch(remoteUrl);
