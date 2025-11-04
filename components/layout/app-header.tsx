@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut, User, Edit } from "lucide-react";
+import { LogOut, User, Edit, QrCode } from "lucide-react";
 
 import { NotificationBell } from "@/components/layout/notification-bell";
 
@@ -34,16 +34,10 @@ export function AppHeader({ profile }: AppHeaderProps) {
   const googleAvatar = profile?.avatarUrl;
 
   const navLinks = [
-    { href: "/dashboard", label: "Inicio" },
-    { href: "/directorio", label: "Directorio" },
-    { href: "/conexiones", label: "Conexiones" },
-    { href: "/qr", label: "Mi QR" },
+    { href: "/personas", label: "Personas" },
   ];
 
   const isActive = (href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
-    }
     return pathname.startsWith(href);
   };
 
@@ -80,18 +74,17 @@ export function AppHeader({ profile }: AppHeaderProps) {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-full border px-3 py-1.5 transition ${
-                isActive(link.href)
+              className={`rounded-full border px-3 py-1.5 transition ${isActive(link.href)
                   ? "border-primary/50 text-primary"
                   : "border-border/60 text-muted-foreground hover:border-primary/50 hover:text-primary"
-              }`}
+                }`}
             >
               {link.label}
             </Link>
           ))}
-          
-          {profile && <NotificationBell />}
-          
+
+
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="rounded-full border border-border/60 px-3 py-1.5 text-muted-foreground transition hover:border-primary/50 hover:text-primary inline-flex items-center gap-1.5">
@@ -144,6 +137,12 @@ export function AppHeader({ profile }: AppHeaderProps) {
                       Editar perfil
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/qr" className="cursor-pointer">
+                      <QrCode className="mr-2 h-4 w-4" />
+                      Mi código QR
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </>
               )}
@@ -153,6 +152,7 @@ export function AppHeader({ profile }: AppHeaderProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          {profile && <NotificationBell />}
         </nav>
       </div>
     </header>
