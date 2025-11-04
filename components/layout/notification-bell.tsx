@@ -8,6 +8,7 @@ import { es } from "date-fns/locale";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,11 +58,117 @@ export function NotificationBell() {
   };
 
   useEffect(() => {
+    const supabase = createClient();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+    let isSubscribed = true;
+
+    // Initial fetch
     fetchNotifications();
-    
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+
+    console.log('🚀 Setting up Realtime and polling...');
+
+    // Set up Realtime subscription for instant notifications
+    const setupRealtime = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      // Clean up existing channel if any
+      if (channel) {
+        await supabase.removeChannel(channel);
+      }
+
+      channel = supabase
+        .channel(`notifications-${user.id}`, {
+          config: {
+            broadcast: { self: false },
+            presence: { key: user.id },
+          },
+        })
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('🔔 New notification received!', payload.new);
+            // Fetch fresh notifications when a new one arrives
+            fetchNotifications();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('📝 Notification updated:', payload.new);
+            // Update local state when notification is marked as read
+            if (payload.new && typeof payload.new === 'object' && 'id' in payload.new) {
+              setNotifications((prev) =>
+                prev.map((n) =>
+                  n.id === payload.new.id ? { ...n, ...payload.new } : n
+                )
+              );
+              if ('read' in payload.new && payload.new.read) {
+                setUnreadCount((prev) => Math.max(0, prev - 1));
+              }
+            }
+          }
+        )
+        .subscribe((status, err) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('✅ Realtime CONNECTED - Notifications will arrive instantly!');
+          } else if (status === 'CHANNEL_ERROR') {
+            console.error('❌ Realtime ERROR:', err);
+            // Attempt to reconnect after 5 seconds
+            reconnectTimeout = setTimeout(() => {
+              console.log('🔄 Attempting to reconnect Realtime...');
+              setupRealtime();
+            }, 5000);
+          } else if (status === 'TIMED_OUT') {
+            console.warn('⏱️ Realtime TIMED OUT - Reconnecting...');
+            // Attempt to reconnect immediately
+            reconnectTimeout = setTimeout(() => {
+              setupRealtime();
+            }, 1000);
+          } else if (status === 'CLOSED') {
+            console.log('🔌 Realtime connection CLOSED');
+          } else {
+            console.log('🔄 Realtime status:', status);
+          }
+        });
+    };
+
+    setupRealtime();
+
+    // Fallback polling every 60 seconds (reduced from 30s since we have Realtime)
+    // This ensures we don't miss anything if Realtime fails
+    const interval = setInterval(() => {
+      if (isSubscribed) {
+        console.log('⏰ Fallback poll (every 60s)');
+        fetchNotifications();
+      }
+    }, 60000);
+
+    return () => {
+      console.log('🧹 Cleaning up Realtime and polling...');
+      isSubscribed = false;
+      clearInterval(interval);
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      if (channel) {
+        supabase.removeChannel(channel).catch(console.error);
+      }
+    };
   }, []);
 
   const markAsRead = async (notificationId: string) => {
@@ -69,7 +176,7 @@ export function NotificationBell() {
       const response = await fetch(`/api/notifications/${notificationId}/read`, {
         method: "PATCH",
       });
-      
+
       if (response.ok) {
         setNotifications((prev) =>
           prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
@@ -87,7 +194,7 @@ export function NotificationBell() {
       const response = await fetch("/api/notifications/mark-all-read", {
         method: "POST",
       });
-      
+
       if (response.ok) {
         setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
         setUnreadCount(0);
@@ -101,7 +208,7 @@ export function NotificationBell() {
 
   const getNotificationText = (notification: Notification) => {
     const actorName = notification.actor[0]?.name || "Alguien";
-    
+
     switch (notification.type) {
       case "connection_request":
         return `${actorName} te envió una solicitud de conexión`;
@@ -157,7 +264,7 @@ export function NotificationBell() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        
+
         {notifications.length === 0 ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
             <Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
@@ -186,9 +293,8 @@ export function NotificationBell() {
                       }
                       setIsOpen(false);
                     }}
-                    className={`flex gap-3 p-3 ${
-                      !notification.read ? "bg-primary/5" : ""
-                    }`}
+                    className={`flex gap-3 p-3 ${!notification.read ? "bg-primary/5" : ""
+                      }`}
                   >
                     <Avatar className="h-10 w-10 flex-shrink-0">
                       <AvatarImage src={actor?.avatar_url || undefined} />
@@ -213,7 +319,7 @@ export function NotificationBell() {
             })}
           </ScrollArea>
         )}
-        
+
         {notifications.length > 0 && (
           <>
             <DropdownMenuSeparator />
