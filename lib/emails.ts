@@ -49,7 +49,6 @@ async function sendEmail({ to, subject, html }: SendEmailParams) {
 
 interface ConnectionRequestEmailParams {
   recipientEmail: string;
-  recipientName: string;
   requesterName: string;
   requesterHeadline?: string | null;
   requesterCompany?: string | null;
@@ -58,7 +57,6 @@ interface ConnectionRequestEmailParams {
 
 export async function sendConnectionRequestEmail({
   recipientEmail,
-  recipientName,
   requesterName,
   requesterHeadline,
   requesterCompany,
@@ -187,7 +185,6 @@ export async function sendConnectionRequestEmail({
 
 interface ConnectionAcceptedEmailParams {
   recipientEmail: string;
-  recipientName: string;
   accepterName: string;
   accepterHeadline?: string | null;
   accepterCompany?: string | null;
@@ -196,7 +193,6 @@ interface ConnectionAcceptedEmailParams {
 
 export async function sendConnectionAcceptedEmail({
   recipientEmail,
-  recipientName,
   accepterName,
   accepterHeadline,
   accepterCompany,

@@ -63,6 +63,7 @@ export const profileFormSchema = z.object({
   website: urlOptional,
   hide_phone_until_connected: z.boolean().default(true),
   hide_email_until_connected: z.boolean().default(true),
+  hide_socials_until_connected: z.boolean().default(true),
   avatar_url: z.string().optional().nullable(),
 });
 

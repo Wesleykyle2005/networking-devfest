@@ -15,13 +15,13 @@ export interface PhoneInputProps
 }
 
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-  ({ value, onChange, ...props }, ref) => {
+  ({ value, onChange, ...props }) => {
     return (
       <PhoneInputWithCountry
         flags={flags}
         defaultCountry="NI"
-        value={value as any}
-        onChange={onChange as any}
+        value={value}
+        onChange={(val) => onChange?.(val as string | undefined)}
         inputComponent={Input}
         international
         withCountryCallingCode

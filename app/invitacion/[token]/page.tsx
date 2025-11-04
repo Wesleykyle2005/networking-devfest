@@ -118,7 +118,6 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
 
     if (!profile) {
       // Create profile for user
-      const eventConfig = getEventConfig();
       const fallbackName =
         (typeof user.user_metadata?.full_name === "string" &&
           user.user_metadata.full_name.trim()) ||

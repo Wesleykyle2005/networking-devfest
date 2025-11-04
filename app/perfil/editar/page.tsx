@@ -22,7 +22,7 @@ export default async function EditProfilePage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "slug_uuid, name, headline, company, job_title, bio, location, social_linkedin, social_twitter, social_instagram, social_facebook, phone, email_public, website, hide_phone_until_connected, hide_email_until_connected, avatar_url"
+      "slug_uuid, name, headline, company, job_title, bio, location, social_linkedin, social_twitter, social_instagram, social_facebook, phone, email_public, website, hide_phone_until_connected, hide_email_until_connected, hide_socials_until_connected, avatar_url"
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -51,6 +51,8 @@ export default async function EditProfilePage() {
       profile.hide_phone_until_connected ?? true,
     hide_email_until_connected:
       profile.hide_email_until_connected ?? true,
+    hide_socials_until_connected:
+      profile.hide_socials_until_connected ?? true,
     avatar_url: profile.avatar_url ?? "",
   };
 

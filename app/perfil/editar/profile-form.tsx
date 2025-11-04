@@ -476,14 +476,14 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
             >
               <Input placeholder="https://miportfolio.dev" {...form.register("website")} />
             </FormField>
-            <div className="space-y-3 rounded-lg border border-dashed p-4 sm:flex sm:items-center sm:justify-between">
+            <div className="space-y-3 rounded-lg border border-dashed p-4">
               <div>
                 <p className="text-sm font-medium">Privacidad de contacto</p>
                 <p className="text-sm text-muted-foreground">
                   Oculta tus datos hasta que alguien forme parte de tus conexiones.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-3">
                 <label className="flex items-center gap-2 text-sm">
                   <Checkbox
                     checked={form.watch("hide_phone_until_connected")}
@@ -509,6 +509,19 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
                     }
                   />
                   Ocultar correo
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={form.watch("hide_socials_until_connected")}
+                    onCheckedChange={(checked) =>
+                      form.setValue(
+                        "hide_socials_until_connected",
+                        Boolean(checked),
+                        { shouldDirty: true },
+                      )
+                    }
+                  />
+                  Ocultar redes sociales
                 </label>
               </div>
             </div>

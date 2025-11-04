@@ -32,7 +32,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, name, headline, company, job_title, bio, location, avatar_url, social_linkedin, social_twitter, social_instagram, social_facebook, phone, email_public, website, hide_phone_until_connected, hide_email_until_connected"
+      "id, name, headline, company, job_title, bio, location, avatar_url, social_linkedin, social_twitter, social_instagram, social_facebook, phone, email_public, website, hide_phone_until_connected, hide_email_until_connected, hide_socials_until_connected"
     )
     .eq("slug_uuid", slug)
     .maybeSingle();
@@ -103,6 +103,9 @@ export default async function PublicProfilePage({ params }: PageProps) {
   const canSeeEmail = connectionState === "self"
     || connectionState === "connected"
     || !profile.hide_email_until_connected;
+  const canSeeSocials = connectionState === "self"
+    || connectionState === "connected"
+    || !profile.hide_socials_until_connected;
   const isOwner = connectionState === "self";
 
   const socials = [
@@ -224,7 +227,11 @@ export default async function PublicProfilePage({ params }: PageProps) {
                 <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Redes sociales
                 </h2>
-                {socials.length === 0 ? (
+                {!canSeeSocials ? (
+                  <p className="text-sm text-muted-foreground">
+                    🔒 Visibles solo para conexiones
+                  </p>
+                ) : socials.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
                     Este asistente aún no agregó sus redes.
                   </p>

@@ -75,20 +75,14 @@ export async function POST(request: Request) {
       reference_id: payload.requestId,
     });
 
-    // Get requester email and profile using service client
+    // Get requester email using service client
     const { data: requesterUser } = await serviceClient.auth.admin.getUserById(requestRow.requester_id);
-    const { data: requesterProfile } = await supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", requestRow.requester_id)
-      .single();
 
     // Send email notification to requester
     if (requesterUser?.user?.email && accepterProfile) {
       console.log("[connections/approve] Sending email to:", requesterUser.user.email);
       sendConnectionAcceptedEmail({
         recipientEmail: requesterUser.user.email,
-        recipientName: requesterProfile?.name || "Usuario",
         accepterName: accepterProfile.name || "Alguien",
         accepterHeadline: accepterProfile.headline,
         accepterCompany: accepterProfile.company,

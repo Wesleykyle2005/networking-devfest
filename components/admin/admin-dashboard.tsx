@@ -9,7 +9,7 @@ import { ConnectionsTable } from "./connections-table";
 
 interface AdminDashboardProps {
   eventId: string;
-  eventName: string;
+  eventName?: string;
 }
 
 interface Metrics {
@@ -21,7 +21,7 @@ interface Metrics {
   scanSourceBreakdown: Record<string, number>;
 }
 
-export function AdminDashboard({ eventId, eventName }: AdminDashboardProps) {
+export function AdminDashboard({ eventId }: AdminDashboardProps) {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -145,7 +145,6 @@ export async function POST(request: Request) {
         console.log("[connections/request] Sending email to:", recipientUser.user.email);
         sendConnectionRequestEmail({
           recipientEmail: recipientUser.user.email,
-          recipientName: target.name || "Usuario",
           requesterName: requesterProfile.name || "Alguien",
           requesterHeadline: requesterProfile.headline,
           requesterCompany: requesterProfile.company,
