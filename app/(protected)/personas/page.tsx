@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 
-import { AppHeader } from "@/components/layout/app-header";
 import { PersonasTabs } from "@/components/personas/personas-tabs";
 import { DirectoryContent } from "@/components/personas/directory-content";
 import { ConnectionsContent } from "@/components/personas/connections-content";
@@ -38,14 +37,6 @@ export default async function PersonasPage({ searchParams }: PersonasPageProps) 
 
   return (
     <div className="flex min-h-screen flex-col">
-      <AppHeader
-        profile={{
-          name: profile.name,
-          email: user.email,
-          avatarUrl: profile.avatar_url,
-          slug: profile.slug_uuid,
-        }}
-      />
       <main className="flex-1 bg-gradient-to-b from-background to-muted">
         <PersonasTabs activeTab={activeTab}>
           {activeTab === "descubrir" && <DirectoryContent />}

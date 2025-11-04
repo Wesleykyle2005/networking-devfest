@@ -330,10 +330,10 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
             <CardTitle className="text-lg font-semibold">Información principal</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            <FormField label="Nombre" error={form.formState.errors.name?.message}>
+              <Input placeholder="Tu nombre completo" {...form.register("name")} />
+            </FormField>
             <FormRow>
-              <FormField label="Nombre" error={form.formState.errors.name?.message}>
-                <Input placeholder="Tu nombre completo" {...form.register("name")} />
-              </FormField>
               <FormField
                 label="Titular profesional"
                 error={form.formState.errors.headline?.message}
@@ -343,17 +343,8 @@ export function ProfileForm({ initialValues, slug, userId }: ProfileFormProps) {
                   {...form.register("headline")}
                 />
               </FormField>
-            </FormRow>
-            <FormRow>
               <FormField label="Empresa" error={form.formState.errors.company?.message}>
                 <Input placeholder="Nombre de la empresa" {...form.register("company")} />
-              </FormField>
-              <FormField
-                label="Cargo"
-                hint="Opcional, ayuda al directorio"
-                error={form.formState.errors.job_title?.message}
-              >
-                <Input placeholder="Tu rol actual" {...form.register("job_title")} />
               </FormField>
             </FormRow>
             <FormField

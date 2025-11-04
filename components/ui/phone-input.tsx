@@ -15,7 +15,8 @@ export interface PhoneInputProps
 }
 
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-  ({ value, onChange, ...props }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ value, onChange, ...props }, _ref) => {
     return (
       <PhoneInputWithCountry
         flags={flags}
