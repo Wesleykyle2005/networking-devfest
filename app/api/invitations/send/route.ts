@@ -79,7 +79,28 @@ export async function POST(request: Request) {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
-  // Create invitation
+  // Get event config
+  const eventConfig = getEventConfig();
+  const appDomain = getAppDomain();
+  const invitationUrl = `https://${appDomain}/invitacion/${token}`;
+
+  // Send email FIRST - only create invitation if email succeeds
+  const emailResult = await sendInvitationEmail({
+    recipientEmail: normalizedEmail,
+    inviterName: inviterProfile.name,
+    invitationUrl,
+    eventName: eventConfig.name,
+  });
+
+  if (!emailResult.success) {
+    console.error("[invitations] Failed to send email:", emailResult.error);
+    return NextResponse.json(
+      { error: "No se pudo enviar el email de invitación" },
+      { status: 500 }
+    );
+  }
+
+  // Email sent successfully - NOW create the invitation in database
   const { data: invitation, error: invitationError } = await supabase
     .from("invitations")
     .insert({
@@ -94,29 +115,11 @@ export async function POST(request: Request) {
     .single();
 
   if (invitationError) {
-    console.error("[invitations] Error creating invitation:", invitationError);
+    console.error("[invitations] Email sent but DB insert failed:", invitationError);
     return NextResponse.json(
-      { error: "No se pudo crear la invitación" },
+      { error: "Email enviado pero error al guardar invitación" },
       { status: 500 }
     );
-  }
-
-  // Get event config
-  const eventConfig = getEventConfig();
-  const appDomain = getAppDomain();
-  const invitationUrl = `https://${appDomain}/invitacion/${token}`;
-
-  // Send invitation email
-  const emailResult = await sendInvitationEmail({
-    recipientEmail: normalizedEmail,
-    inviterName: inviterProfile.name,
-    invitationUrl,
-    eventName: eventConfig.name,
-  });
-
-  if (!emailResult.success) {
-    console.error("[invitations] Failed to send email:", emailResult.error);
-    // Don't fail the request, invitation is created
   }
 
   return NextResponse.json({

@@ -7,9 +7,10 @@ interface SendEmailParams {
   to: string;
   subject: string;
   html: string;
+  tags?: Record<string, string>; // For tracking
 }
 
-async function sendEmail({ to, subject, html }: SendEmailParams) {
+async function sendEmail({ to, subject, html, tags }: SendEmailParams) {
   if (!RESEND_API_KEY) {
     console.warn("[emails] RESEND_API_KEY not configured, skipping email");
     return { success: false, error: "Email not configured" };
@@ -29,6 +30,7 @@ async function sendEmail({ to, subject, html }: SendEmailParams) {
         to,
         subject,
         html,
+        ...(tags && { tags }), // Include tags if provided
       }),
     });
 
@@ -180,6 +182,9 @@ export async function sendConnectionRequestEmail({
     to: recipientEmail,
     subject: `${requesterName} te envió una solicitud de conexión`,
     html,
+    tags: {
+      category: 'connection_request',
+    },
   });
 }
 
@@ -316,6 +321,9 @@ export async function sendConnectionAcceptedEmail({
     to: recipientEmail,
     subject: `${accepterName} aceptó tu solicitud de conexión`,
     html,
+    tags: {
+      category: 'connection_accepted',
+    },
   });
 }
 
@@ -433,5 +441,8 @@ export async function sendInvitationEmail({
     to: recipientEmail,
     subject: `${inviterName} te invitó a ${eventName}`,
     html,
+    tags: {
+      category: 'invitation',
+    },
   });
 }

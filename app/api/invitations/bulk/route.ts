@@ -95,31 +95,13 @@ export async function POST(request: Request) {
       continue;
     }
 
-    // Create invitation
+    // Generate token and URL first
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30); // 30 days expiration for bulk
-
-    const { data: invitation, error: invitationError } = await supabase
-      .from("invitations")
-      .insert({
-        email: normalizedEmail,
-        event_id: inviterProfile.event_id,
-        invited_by: inviterProfile.id,
-        token,
-        expires_at: expiresAt.toISOString(),
-        status: "pending",
-      })
-      .select()
-      .single();
-
-    if (invitationError) {
-      results.failed.push({ email, reason: invitationError.message });
-      continue;
-    }
-
-    // Send email
     const invitationUrl = `https://${appDomain}/invitacion/${token}`;
+
+    // Send email FIRST - only create invitation if email succeeds
     const emailResult = await sendInvitationEmail({
       recipientEmail: normalizedEmail,
       inviterName: inviterProfile.name,
@@ -132,17 +114,25 @@ export async function POST(request: Request) {
         ? emailResult.error 
         : "Error al enviar email";
       results.failed.push({ email, reason: errorMessage });
-      
-      // Delete invitation if email failed to maintain consistency
-      const { error: deleteError } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("id", invitation.id);
-      
-      if (deleteError) {
-        console.error(`[bulk-invitations] Failed to delete invitation for ${email}:`, deleteError);
-      }
-      
+      continue;
+    }
+
+    // Email sent successfully - NOW create the invitation in database
+    const { error: invitationError } = await supabase
+      .from("invitations")
+      .insert({
+        email: normalizedEmail,
+        event_id: inviterProfile.event_id,
+        invited_by: inviterProfile.id,
+        token,
+        expires_at: expiresAt.toISOString(),
+        status: "pending",
+      });
+
+    if (invitationError) {
+      // Email was sent but DB insert failed - log this as it's unusual
+      console.error(`[bulk-invitations] Email sent but DB insert failed for ${email}:`, invitationError);
+      results.failed.push({ email, reason: "Email enviado pero error en base de datos" });
       continue;
     }
 
