@@ -20,23 +20,19 @@ create index email_tracking_created_at_idx on public.email_tracking(created_at d
 -- Enable RLS
 alter table public.email_tracking enable row level security;
 
--- Only admins can view email tracking
-create policy "Admins can view email tracking"
-  on public.email_tracking
-  for select
-  using (
-    exists (
-      select 1 from public.profiles
-      where profiles.id = auth.uid()
-      and profiles.is_admin = true
-    )
-  );
-
--- System can insert tracking events
-create policy "System can insert tracking events"
+-- Allow service role to insert tracking events (from webhooks)
+create policy "Service role can insert tracking events"
   on public.email_tracking
   for insert
+  to service_role
   with check (true);
+
+-- Allow service role to view tracking events (for admin panel)
+create policy "Service role can view tracking events"
+  on public.email_tracking
+  for select
+  to service_role
+  using (true);
 
 -- Add comment
 comment on table public.email_tracking is 

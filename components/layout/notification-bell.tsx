@@ -80,12 +80,7 @@ export function NotificationBell() {
       }
 
       channel = supabase
-        .channel(`notifications-${user.id}`, {
-          config: {
-            broadcast: { self: false },
-            presence: { key: user.id },
-          },
-        })
+        .channel(`notifications:user_id=eq.${user.id}`)
         .on(
           'postgres_changes',
           {

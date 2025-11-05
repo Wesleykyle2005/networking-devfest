@@ -144,5 +144,41 @@ export async function POST(request: Request) {
     await syncOAuthAvatar({ user, currentAvatar: existingProfile.avatar_url ?? null });
   }
 
+  // Check if user has a pending invitation and mark it as accepted
+  if (user.email) {
+    console.log('[join] Checking for pending invitation for email:', user.email);
+    
+    const { data: pendingInvitation, error: invitationFetchError } = await supabase
+      .from('invitations')  
+      .select('id, token, email, status')
+      .eq('email', user.email.toLowerCase())
+      .eq('status', 'pending')
+      .maybeSingle();
+
+    if (invitationFetchError) {
+      console.error('[join] Error fetching invitation:', invitationFetchError);
+    }
+
+    if (pendingInvitation) {
+      console.log('[join] Found pending invitation:', pendingInvitation.id);
+      
+      const { error: updateError } = await supabase
+        .from('invitations')
+        .update({
+          status: 'accepted',
+          accepted_at: now,
+        })
+        .eq('id', pendingInvitation.id);
+      
+      if (updateError) {
+        console.error('[join] Error updating invitation:', updateError);
+      } else {
+        console.log('[join] ✅ Successfully marked invitation as accepted for:', user.email);
+      }
+    } else {
+      console.log('[join] No pending invitation found for:', user.email);
+    }
+  }
+
   return NextResponse.json({ success: true });
 }
