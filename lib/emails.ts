@@ -1,7 +1,7 @@
 import { getAppDomain } from "@/lib/env-config";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = "notificaciones@devfest.raandino.dev";
+const FROM_EMAIL = "notificaciones@gdgmanagua.dev";
 
 interface SendEmailParams {
   to: string;
