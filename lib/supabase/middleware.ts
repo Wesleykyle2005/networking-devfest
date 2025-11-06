@@ -47,16 +47,23 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  
   if (
     request.nextUrl.pathname !== "/" &&
+    request.nextUrl.pathname !== basePath &&
+    request.nextUrl.pathname !== `${basePath}/` &&
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
+    !request.nextUrl.pathname.startsWith(`${basePath}/login`) &&
     !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/invitacion")
+    !request.nextUrl.pathname.startsWith(`${basePath}/auth`) &&
+    !request.nextUrl.pathname.startsWith("/invitacion") &&
+    !request.nextUrl.pathname.startsWith(`${basePath}/invitacion`)
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = `${basePath}/login`;
     // Preserve the original URL as the 'redirect' parameter
     url.searchParams.set("redirect", request.nextUrl.pathname + request.nextUrl.search);
     return NextResponse.redirect(url);
