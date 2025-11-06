@@ -5,6 +5,7 @@ import { Upload, FileText, AlertCircle, CheckCircle2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api-client";
 
 interface BulkInviteResults {
   total: number;
@@ -80,7 +81,7 @@ export function BulkInviteForm() {
         return;
       }
 
-      const response = await fetch("/api/invitations/bulk", {
+      const response = await apiFetch("/api/invitations/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emails }),

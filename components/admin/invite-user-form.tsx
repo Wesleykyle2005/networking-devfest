@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { apiFetch } from "@/lib/api-client";
 
 export function InviteUserForm() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export function InviteUserForm() {
     setStatus({ type: null, message: "" });
 
     try {
-      const response = await fetch("/api/invitations/send", {
+      const response = await apiFetch("/api/invitations/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

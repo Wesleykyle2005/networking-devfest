@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { apiFetch } from "@/lib/api-client";
 
 interface PendingRequestCardProps {
   requestId: string;
@@ -26,7 +27,7 @@ export function PendingRequestCard({ requestId, requester }: PendingRequestCardP
     setIsProcessing(true);
     setError(null);
     try {
-      const response = await fetch(`/api/connections/requests/${endpoint}`, {
+      const response = await apiFetch(`/api/connections/requests/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requestId }),

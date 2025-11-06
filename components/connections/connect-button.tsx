@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { apiFetch } from "@/lib/api-client";
 
 type ConnectionState = "idle" | "pending" | "connected";
 
@@ -53,7 +54,7 @@ export function ConnectButton({
     setIsLoading(true);
     setFeedback(null);
     try {
-      const response = await fetch("/api/connections/request", {
+      const response = await apiFetch("/api/connections/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: profileSlug, profileId }),

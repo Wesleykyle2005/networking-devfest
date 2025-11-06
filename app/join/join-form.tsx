@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiFetch } from "@/lib/api-client";
 
 interface JoinFormProps {
   eventName: string;
@@ -32,7 +33,7 @@ export function JoinForm({ eventName }: JoinFormProps) {
 
     startTransition(async () => {
       try {
-        const response = await fetch("/api/join", {
+        const response = await apiFetch("/api/join", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

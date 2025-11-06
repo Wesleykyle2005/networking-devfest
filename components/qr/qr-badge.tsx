@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api-client";
 import {
   Dialog,
   DialogContent,
@@ -50,7 +51,7 @@ export function QrBadge({
     setIsDownloading(true);
 
     try {
-      const response = await fetch("/api/qr/render", {
+      const response = await apiFetch("/api/qr/render", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

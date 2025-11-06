@@ -5,6 +5,7 @@ import { Users, TrendingUp, Link2, Clock, ScanLine, UserCheck, UserPlus, Activit
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { apiFetch } from "@/lib/api-client";
 import { AttendeesTable } from "./attendees-table";
 import { ConnectionsTable } from "./connections-table";
 
@@ -30,7 +31,7 @@ export function AdminDashboard({ eventId }: AdminDashboardProps) {
   useEffect(() => {
     async function fetchMetrics() {
       try {
-        const response = await fetch("/api/admin/metrics");
+        const response = await apiFetch("/api/admin/metrics");
         if (!response.ok) {
           throw new Error("Error al cargar métricas");
         }

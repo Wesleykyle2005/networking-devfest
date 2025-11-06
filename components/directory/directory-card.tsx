@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { apiFetch, getApiUrl } from "@/lib/api-client";
 
 interface DirectoryCardProps {
   profile: {
@@ -23,16 +24,17 @@ export function DirectoryCard({ profile }: DirectoryCardProps) {
     const body = JSON.stringify({ profileId: profile.id, source: "directory" as const });
 
     try {
+      const endpoint = getApiUrl("/api/scans");
       if (navigator.sendBeacon) {
         const blob = new Blob([body], { type: "application/json" });
-        navigator.sendBeacon("/api/scans", blob);
+        navigator.sendBeacon(endpoint, blob);
         return;
       }
     } catch {
       // ignore and fallback
     }
 
-    fetch("/api/scans", {
+    apiFetch("/api/scans", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body,
