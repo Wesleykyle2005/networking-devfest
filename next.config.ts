@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Configure app to work under /networking subpath
+  // This allows the orchestrator at gdgmanagua.dev to proxy /networking/* to this app
+  basePath: '/networking',
+  
+  // Ensure assets are served with the correct prefix
+  assetPrefix: '/networking',
+  
+  // Don't add trailing slashes
+  trailingSlash: false,
 };
 
 export default nextConfig;

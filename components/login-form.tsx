@@ -80,10 +80,19 @@ export function LoginForm({
         email,
         options: {
           emailRedirectTo: redirectUrl,
+          shouldCreateUser: false, // Only send magic link to existing users
         },
       });
 
       if (signInError) {
+        // Check if error is because user doesn't exist
+        if (signInError.message?.includes('User not found') || 
+            signInError.message?.includes('Invalid login credentials')) {
+          setError(
+            "No encontramos una cuenta con este correo. Si recibiste una invitación, por favor usa el enlace del correo de invitación."
+          );
+          return;
+        }
         throw signInError;
       }
 
