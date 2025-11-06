@@ -32,3 +32,17 @@ export function getApiUrl(path: string): string {
     ? `${window.location.origin}${basePath}${normalizedPath}`
     : normalizedPath;
 }
+
+/**
+ * Get the full URL including basePath
+ * Use this for OAuth redirects and other absolute URLs
+ * @param path - Path (e.g., '/auth/callback')
+ */
+export function getFullUrl(path: string): string {
+  if (typeof window === 'undefined') {
+    return path;
+  }
+  
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${window.location.origin}${basePath}${normalizedPath}`;
+}

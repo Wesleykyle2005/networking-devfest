@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { getFullUrl } from "@/lib/api-client";
 
 export function LoginForm({
   className,
@@ -36,7 +37,7 @@ export function LoginForm({
     setIsGoogleLoading(true);
     try {
       const supabase = createClient();
-      const redirectUrl = `${window.location.origin}/auth/callback${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`;
+      const redirectUrl = getFullUrl(`/auth/callback${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`);
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -74,7 +75,7 @@ export function LoginForm({
     setIsEmailLoading(true);
     try {
       const supabase = createClient();
-      const redirectUrl = `${window.location.origin}/auth/confirm${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`;
+      const redirectUrl = getFullUrl(`/auth/confirm${redirectParam ? `?next=${encodeURIComponent(redirectParam)}` : ""}`);
 
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email,
