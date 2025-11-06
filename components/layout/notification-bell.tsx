@@ -9,6 +9,7 @@ import { es } from "date-fns/locale";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { apiFetch } from "@/lib/api-client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +47,7 @@ export function NotificationBell() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("/api/notifications");
+      const response = await apiFetch("/api/notifications");
       if (response.ok) {
         const data: NotificationsResponse = await response.json();
         setNotifications(data.notifications);
@@ -168,7 +169,7 @@ export function NotificationBell() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      const response = await fetch(`/api/notifications/${notificationId}/read`, {
+      const response = await apiFetch(`/api/notifications/${notificationId}/read`, {
         method: "PATCH",
       });
 
@@ -186,7 +187,7 @@ export function NotificationBell() {
   const markAllAsRead = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/notifications/mark-all-read", {
+      const response = await apiFetch("/api/notifications/mark-all-read", {
         method: "POST",
       });
 
