@@ -10,6 +10,18 @@ const nextConfig: NextConfig = {
   
   // Don't add trailing slashes
   trailingSlash: false,
+
+  // Allow Server Actions from the orchestrator domain
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'www.gdgmanagua.dev',
+        'gdgmanagua.dev',
+        'devfest.raandino.dev',
+        'localhost:3000',
+      ],
+    },
+  },
 };
 
 export default nextConfig;
